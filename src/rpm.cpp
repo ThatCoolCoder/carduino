@@ -24,7 +24,7 @@ void updateRpm()
 
     int delta = new_rpm - rpm;
 
-    if (abs(delta) > RPM_MAX_JUMP && (now - last_valid_rpm_time) < RPM_MAX_STALE_DURATION_MS)
+    if (abs(delta) > RPM_MAX_JUMP && (now - last_valid_rpm_time) < (long) RPM_MAX_STALE_DURATION_MS * 1000L)
     {
         if (LOG_RPM)
         {
@@ -38,6 +38,9 @@ void updateRpm()
 
     if (LOG_RPM)
     {
+        Serial.print(rpm_pulse_times[0]);
+        Serial.print(",");
+        Serial.print(rpm_pulse_times[1]);
         Serial.print("rpm: ");
         Serial.println(new_rpm);
     }
