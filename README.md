@@ -1,4 +1,4 @@
-# lancer arduino controller
+# car arduino controller
 
 https://forum.arduino.cc/t/reading-tach-output-wire-12v-to-5v/469365/4
 
@@ -56,7 +56,7 @@ like the 2 step, you can switch between hard and soft cut
 snake case variables and camel case functions for some reason
 
 Have used the following terms:
-- "enabled" is a compile/flash-time switch to add or remove functionality
+- "enabled" is a compile/flash-time switch to add or remove functionality. as these are set at compile-time, we don't need to worry about transient state caused when these change.
 - "selected" long-duration on-off thing, set through a switch (whether it *could* do stuff)
 - "active" whether it's currently doing stuff, set through a momentary button 
 

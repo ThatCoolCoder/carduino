@@ -1,33 +1,12 @@
-#include <debounce.h>
 
-#include "config.hpp"
+#include "src/config.hpp"
+#include "src/buttons.cpp"
+#include "src/state.cpp"
+#include "src/blink.cpp"
+#include "src/config_helpers.hpp"
 
-#define RPM_ENABLED (TWO_STEP_ENABLED || ROLLING_CUT_ENABLED || GLOBAL_LIMITER_ENABLED)
-#define SPARK_CUT_ENABLED (TWO_STEP_ENABLED || ROLLING_CUT_ENABLED || GLOBAL_LIMITER_ENABLED || MANUAL_CUT_ENABLED || NO_LIFT_ENABLED)
 
-#define INPUT_IF(condition, pin) if(condition) pinMode(pin, INPUT_PULLUP)
-#define OUTPUT_IF(condition, pin)  if(condition) pinMode(pin, OUTPUT)
 
-#define REQUIRE_ENABLED(condition) if (!condition) return
-
-bool unlocked = false;
-bool locked_out = false;
-
-bool no_lift_active = false;
-int two_step_level_idx = 0;
-bool two_step_active = false;
-bool two_step_cut_mode = TWO_STEP_DEFAULT_CUT;
-bool rolling_cut_mode = ROLLING_DEFAULT_CUT;
-bool rolling_cut_target_rpm = 0; // if 0 means not active
-
-bool accel_pressed = false;
-bool clutch_pressed = false;
-
-bool soft_cut_was_on_coil_1 = false;
-
-long last_hard_cut = 0;
-
-int rpm = 3000;
 
 void setup()
 {
@@ -59,60 +38,6 @@ void setup()
     blinkCode(1, 100, 0);
 }
 
-void blinkCode(int blinks, int blink_duration, int pause_duration)
-{
-    REQUIRE_ENABLED(STATUS_LED_ENABLED);
-
-    // since this blocks, we need to safen first just so we don't kill engine if in middle of cut or something lol
-    safen();
-
-    for (int i = 0; i < blinks; i ++)
-    {
-        digitalWrite(OUT_STATUS_LED, HIGH);
-        delay(blink_duration);
-        digitalWrite(OUT_STATUS_LED, LOW);
-        if (i != blinks - 1) delay(pause_duration);
-    }
-}
-
-
-void resetSecurity()
-{
-    REQUIRE_ENABLED(SECURITY_ENABLED);
-
-    unlocked = false;
-    digitalWrite(OUT_FUEL_PUMP, LOW);
-    digitalWrite(OUT_HORN, LOW);
-}
-
-void resetNonSecurity()
-{
-    safen();
-
-    two_step_level_idx = 0;
-    two_step_cut_mode = TWO_STEP_DEFAULT_CUT;
-    rolling_cut_mode = ROLLING_DEFAULT_CUT;
-
-    soft_cut_was_on_coil_1 = false;
-}
-
-void safen()
-{
-    // reset the outputs and constantly changing variables, but not the config stuff
-
-    if (STATUS_LED_ENABLED) digitalWrite(OUT_STATUS_LED, LOW);
-    if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
-    if (SPARK_CUT_ENABLED) (OUT_COIL_2_CUT, LOW);
-
-    no_lift_active = false;
-    two_step_active = false;
-    rolling_cut_target_rpm = 0; // if 0 means not active
-
-    accel_pressed = false;
-    clutch_pressed = false;
-
-    last_hard_cut = 0;
-}
 
 void checkSecurity()
 {
@@ -314,70 +239,5 @@ void softLimiter(int target_rpm, int soft_cut_region, bool* coil_1_cut, bool* co
     {
         *coil_1_cut = false;
         *coil_2_cut = false;
-    }
-}
-
-void two_step_level_cycle_handler(uint8_t btnId, uint8_t btnState)
-{
-    // for some reason all these are 
-    if (btnState == BTN_PRESSED)
-    {
-        two_step_level_idx ++;
-        if (two_step_level_idx >= TWO_STEP_LEVEL_COUNT) two_step_level_idx = 0;
-        blinkCode(two_step_level_idx + 1, 100, 100);
-    }
-}
-
-void two_step_cut_mode_handler(uint8_t btnId, uint8_t btnState)
-{
-    if (btnState == BTN_PRESSED)
-    {
-        two_step_cut_mode = !two_step_cut_mode;
-        blinkCode(two_step_cut_mode + 1, 100, 100);
-    }
-}
-
-void rolling_cut_mode_handler(uint8_t btnId, uint8_t btnState)
-{
-    if (btnState == BTN_PRESSED)
-    {
-        rolling_cut_mode = !rolling_cut_mode;
-        blinkCode(rolling_cut_mode + 1, 100, 100);
-    }
-}
-
-void rolling_cut_handler(uint8_t btnId, uint8_t btnState)
-{
-
-    if (btnState == BTN_PRESSED)
-    {
-        rolling_cut_target_rpm = rpm;
-    }
-    else
-    {
-        rolling_cut_target_rpm = 0;
-    }
-}
-
-Button two_step_level_cycle_button(0, two_step_level_cycle_handler);
-Button two_step_cut_mode_button(0, two_step_cut_mode_handler);
-Button rolling_cut_mode_button(0, rolling_cut_mode_handler);
-Button rolling_cut_button(0, rolling_cut_handler);
-
-void updateButtons()
-{
-    if (TWO_STEP_ENABLED)
-    {
-        two_step_level_cycle_button.update(digitalRead(IN_TWO_STEP_LEVEL_CYCLE));
-        two_step_cut_mode_button.update(digitalRead(IN_TWO_STEP_CUT_MODE));
-    }
-    if (ROLLING_CUT_ENABLED)
-    {
-        rolling_cut_mode_button.update(digitalRead(IN_ROLLING_CUT_MODE));
-        rolling_cut_button.update(digitalRead(IN_ROLLING_CUT_BUTTON));
-    }
-    if (GLOBAL_LIMITER_ENABLED)
-    {
-        // todo: read global limi button
     }
 }

@@ -146,6 +146,8 @@ A list of all the things that can be configured. Some of them need to be flashed
 - 2 step cut mode
 - 2 step current level
 
+- no lift selected
+
 - rolling cut mode
 
 #### Control panel

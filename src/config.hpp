@@ -1,4 +1,6 @@
-#include "softhard.hpp"
+#pragma once
+
+#include "./softhard.hpp"
 
 
 // readings outside of this range will be considered nonsense and all spark-cut systems will be disabled
@@ -13,7 +15,7 @@
 #define NO_LIFT_ENABLED true
 
 #define GLOBAL_LIMITER_ENABLED true
-#define GLOBAL_LIMITER_DEFAULT_CUT_TYPE HARD
+#define GLOBAL_LIMITER_DEFAULT_CUT HARD
 #define GLOBAL_LIMITER_HARD_CUT_DURATION 500
 #define GLOBAL_LIMITER_SOFT_CUT_REGION 300
 #define GLOBAL_LIMITER_LEVEL_COUNT 4
@@ -23,7 +25,6 @@ const int global_limiter_levels[] = {
     6500,
     0, // 0 means no limiter
 };
-#define GLOBAL_LIMITER_DEFAULT_LEVEL_IDX 0
 
 #define TWO_STEP_ENABLED true
 #define TWO_STEP_DEFAULT_CUT HARD
@@ -36,7 +37,6 @@ const int two_step_levels[] = {
     4000,
     5000
 };
-#define TWO_STEP_DEFAULT_LEVEL_IDX 0
 
 #define ROLLING_CUT_ENABLED true
 #define ROLLING_DEFAULT_CUT SOFT

@@ -1,1 +1,1 @@
-arduino-cli compile --fqbn arduino:avr:uno .
+arduino-cli compile --fqbn arduino:avr:uno
