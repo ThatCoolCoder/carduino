@@ -1,7 +1,7 @@
-#pragma once
+#include <Arduino.h>
 
 #include "config.hpp"
-#include "config_helpers.hpp"
+#include "confighelpers.hpp"
 #include "state.cpp"
 
 

@@ -1,6 +1,7 @@
-#pragma once
+#include <Arduino.h>
 
 #include "config.hpp"
+#include "confighelpers.hpp"
 
 bool unlocked = false;
 bool locked_out = false;
@@ -20,12 +21,29 @@ bool rolling_cut_target_rpm = 0; // if 0 means not active
 bool accel_pressed = false;
 bool clutch_pressed = false;
 
+int rpm = 3000;
+
 bool soft_cut_was_on_coil_1 = false;
 
 long last_hard_cut = 0;
 
-int rpm = 3000;
+void safen()
+{
+    // reset the outputs and constantly changing variables, but not the config stuff
 
+    if (STATUS_LED_ENABLED) digitalWrite(OUT_STATUS_LED, LOW);
+    if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
+    if (SPARK_CUT_ENABLED) (OUT_COIL_2_CUT, LOW);
+
+    no_lift_active = false;
+    two_step_active = false;
+    rolling_cut_target_rpm = 0; // if 0 means not active
+
+    accel_pressed = false;
+    clutch_pressed = false;
+
+    last_hard_cut = 0;
+}
 
 
 void resetSecurity()
@@ -46,22 +64,4 @@ void resetNonSecurity()
     rolling_cut_mode = ROLLING_DEFAULT_CUT;
 
     soft_cut_was_on_coil_1 = false;
-}
-
-void safen()
-{
-    // reset the outputs and constantly changing variables, but not the config stuff
-
-    if (STATUS_LED_ENABLED) digitalWrite(OUT_STATUS_LED, LOW);
-    if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
-    if (SPARK_CUT_ENABLED) (OUT_COIL_2_CUT, LOW);
-
-    no_lift_active = false;
-    two_step_active = false;
-    rolling_cut_target_rpm = 0; // if 0 means not active
-
-    accel_pressed = false;
-    clutch_pressed = false;
-
-    last_hard_cut = 0;
 }

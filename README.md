@@ -7,6 +7,8 @@ see also the other markdown file for early overall design info
 
 ## features
 
+These are all of the features, which can be 
+
 #### global master enable
 
 it's designed for most of the controls to be located on a removable (ie hideable) panel. when the panel is detached, the master wire is detached and this disables all features except security (as security needs active input from this to start the car. if this wasn't implemented you would have to rewire things to get it to start w no panel)
@@ -25,11 +27,23 @@ implemented purely to make revs drop quicker on shifts
 
 cuts spark whenever you hold down a button
 
+#### Pedals controls
+
+Pedals can be tied into no-lift and 2 step
+
 #### no-lift shifting
 
 there is a switch to enable/disable it (may change to a momentary button)
 
 when accelerator is floored and clutch begins to be pressed, spark is cut, and only returns when clutch is released (accelerator can be released without regaining spark)
+
+#### rpm reading
+
+needed for everything below this
+
+#### Global limiter
+
+global max rpm, can be changed between levels and 
 
 #### 2 step (not tested - no rpm input yet)
 

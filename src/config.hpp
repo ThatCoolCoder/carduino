@@ -1,4 +1,4 @@
-#pragma once
+#include <Arduino.h>
 
 #include "./softhard.hpp"
 
@@ -10,6 +10,7 @@
 #define MASTER_SWITCH_ENABLED true // if false, will just assume is safe instead of using master switch
 #define STATUS_LED_ENABLED true
 #define SECURITY_ENABLED true
+#define SPARK_CUT_ENABLED true
 #define PEDALS_ENABLED true // whether pedal-related functionality for two-step and no lift is available
 #define MANUAL_CUT_ENABLED true
 #define NO_LIFT_ENABLED true
@@ -57,7 +58,7 @@ const int two_step_levels[] = {
 
 #define IN_CLUTCH 2
 #define IN_ACCEL 3
-#define IN_NO_LIFT_ENABLE_SWITCH 4
+#define IN_NO_LIFT_SELECT_SWITCH 4
 #define IN_SPARK_CUT_MANUAL 5
 #define IN_TWO_STEP_SETTING 6
 #define IN_TWO_STEP_ACTIVE 7

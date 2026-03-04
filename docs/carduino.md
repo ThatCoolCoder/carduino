@@ -113,26 +113,26 @@ killswitch:
 A list of all the things that can be configured. Some of them need to be flashed on, some can be updated live. A configurable is anything that's set before the functionality is used
 
 #### Configurables (flash)
-- Security used
+- Security enabled
 
 - Min safe rpm
 - Max safe rpm
 
-- Global limi used
+- Global limi enabled
 - Global limi list of levels
 - Global limi default level
 - Global limi default cut mode
 - Global limi hard cut duration
 - Global limi soft cut size
 
-- 2 step used
+- 2 step enabled
 - 2 step default cut mode
 - 2 step levels available
 - 2 step default level
 - 2 step hard cut duration
 - 2 step soft cut size
 
-- rolling cut used
+- rolling cut enabled
 - rolling cut default cut mode
 - rolling hard cut duration
 - rolling soft cut size
