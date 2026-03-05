@@ -8,6 +8,8 @@
 #include "src/sparkcut.hpp"
 #include "src/state.hpp"
 
+String s;
+
 void setup()
 {
     Serial.begin(9600);
@@ -32,14 +34,27 @@ void setup()
     OUTPUT_IF(SPARK_CUT_ENABLED, OUT_COIL_2_CUT);
     OUTPUT_IF(STATUS_LED_ENABLED, OUT_STATUS_LED);
 
+    buttonConfig();
     resetSecurity();
     resetNonSecurity();
 
-    blinkCode(1, 100, 0);
+    Serial.setTimeout(5);
+
+    blinkCode(2, 200, 50);
 }
 
 void loop()
 {
+    s += Serial.readString();
+
+    int idx = s.indexOf("\n");
+
+    if (idx > -1) {
+        rpm = s.substring(0, idx).toInt();
+        s = "";
+    }
+
+
     if (SECURITY_ENABLED && ! unlocked)
     {
         checkSecurity();

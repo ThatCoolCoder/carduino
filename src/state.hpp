@@ -10,7 +10,7 @@ extern bool locked_out;
 
 extern bool no_lift_active;
 
-extern bool global_limiter_level_idx;
+extern int global_limiter_level_idx;
 extern bool global_limiter_cut_mode;
 
 extern bool two_step_active;
@@ -18,7 +18,7 @@ extern int two_step_level_idx;
 extern bool two_step_cut_mode;
 
 extern bool rolling_cut_mode;
-extern bool rolling_cut_target_rpm; // if 0 means not active
+extern int rolling_cut_target_rpm; // if 0 means not active
 
 extern bool accel_pressed;
 extern bool clutch_pressed;

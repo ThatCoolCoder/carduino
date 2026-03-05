@@ -42,9 +42,7 @@ void check2Step()
 {
     REQUIRE_ENABLED(TWO_STEP_ENABLED);
 
-    bool button_pressed = digitalRead(IN_TWO_STEP_ACTIVE) == LOW;
-
-    if (button_pressed) two_step_active = true;
+    if (digitalRead(IN_TWO_STEP_ACTIVE) == LOW) two_step_active = true;
     // have chosen to make this stay on even if you let off accel,
     // so that you can let off accel if unhappy without starting revinations
     else if (! clutch_pressed) two_step_active = false;
@@ -62,7 +60,7 @@ void manageSparkCut()
     bool coil_1_cut = false;
     bool coil_2_cut = false;
 
-    if (GLOBAL_LIMITER_ENABLED)
+    if (GLOBAL_LIMITER_ENABLED && global_limiter_levels[global_limiter_level_idx] > 0)
     {
         if (global_limiter_cut_mode == HARD) hardLimiter(global_limiter_levels[global_limiter_level_idx], GLOBAL_LIMITER_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
         else softLimiter(global_limiter_levels[global_limiter_level_idx], GLOBAL_LIMITER_SOFT_CUT_REGION, &coil_1_cut, &coil_2_cut);
@@ -76,7 +74,7 @@ void manageSparkCut()
             coil_1_cut = true;
             coil_2_cut = true;
         }
-        else if (two_step_active)
+        else if (two_step_active && two_step_levels[two_step_level_idx] > 0)
         {
             if (two_step_cut_mode == HARD) hardLimiter(two_step_levels[two_step_level_idx], TWO_STEP_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
             else softLimiter(two_step_levels[two_step_level_idx], TWO_STEP_SOFT_CUT_REGION, &coil_1_cut, &coil_2_cut);
@@ -86,13 +84,13 @@ void manageSparkCut()
             if (rolling_cut_mode == HARD) hardLimiter(rolling_cut_target_rpm, ROLLING_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
             else softLimiter(rolling_cut_target_rpm, ROLLING_SOFT_CUT_REGION, &coil_1_cut, &coil_2_cut);
         }
-
-        if (coil_1_cut) digitalWrite(OUT_COIL_1_CUT, HIGH);
-        else digitalWrite(OUT_COIL_1_CUT, LOW);
-
-        if (coil_2_cut) digitalWrite(OUT_COIL_2_CUT, HIGH);
-        else digitalWrite(OUT_COIL_2_CUT, LOW);
     }
+
+    if (coil_1_cut) digitalWrite(OUT_COIL_1_CUT, HIGH);
+    else digitalWrite(OUT_COIL_1_CUT, LOW);
+
+    if (coil_2_cut) digitalWrite(OUT_COIL_2_CUT, HIGH);
+    else digitalWrite(OUT_COIL_2_CUT, LOW);
 }
 
 

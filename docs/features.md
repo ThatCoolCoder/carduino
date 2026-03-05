@@ -1,6 +1,6 @@
 # Carduino - usage
 
-Below is usage information for each of the features, plus information on which features require which other features.
+Below is usage information for each of the features, plus information on which features require other features.
 
 ## Security
 

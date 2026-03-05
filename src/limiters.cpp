@@ -15,17 +15,17 @@ void hardLimiter(int target_rpm, int cut_time, bool* coil_1_cut, bool* coil_2_cu
         if (! in_window) last_hard_cut = millis();
 
         *coil_1_cut = true;
-        *coil_1_cut = true;
+        *coil_2_cut = true;
     }
     else if (in_window)
     {
         *coil_1_cut = true;
-        *coil_1_cut = true;
+        *coil_2_cut = true;
     }
     else
     {
         *coil_1_cut = false;
-        *coil_1_cut = false;
+        *coil_2_cut = false;
     }
 }
 

@@ -10,6 +10,8 @@
 #define MIN_SAFE_RPM 2000
 #define MAX_SAFE_RPM 7500
 
+#define LONG_PRESS_DURATION 1000 // determiner of long/short press on buttons
+
 #define SECURITY_ENABLED true
 #define MASTER_SWITCH_ENABLED true // if false, will just assume is safe instead of using master switch
 #define STATUS_LED_ENABLED true
