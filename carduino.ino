@@ -38,23 +38,11 @@ void setup()
     resetSecurity();
     resetNonSecurity();
 
-    Serial.setTimeout(5);
-
     blinkCode(2, 200, 50);
 }
 
 void loop()
 {
-    s += Serial.readString();
-
-    int idx = s.indexOf("\n");
-
-    if (idx > -1) {
-        rpm = s.substring(0, idx).toInt();
-        s = "";
-    }
-
-
     if (SECURITY_ENABLED && ! unlocked)
     {
         checkSecurity();
