@@ -2,8 +2,10 @@
 
 #include <debounce.h>
 
-#include "blink.cpp"
-#include "state.cpp"
+#include "buttons.hpp"
+
+#include "blink.hpp"
+#include "state.hpp"
 
 void two_step_level_handler(uint8_t btnId, uint8_t btnState)
 { 
@@ -99,3 +101,5 @@ void updateButtons()
         rolling_cut_btn.update(digitalRead(IN_ROLLING_CUT_SETTING));
     }
 }
+
+

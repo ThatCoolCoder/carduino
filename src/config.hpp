@@ -1,6 +1,9 @@
+#ifndef CONFIG
+#define CONFIG
+
 #include <Arduino.h>
 
-#include "./softhard.hpp"
+#include "softhard.hpp"
 
 
 // readings outside of this range will be considered nonsense and all spark-cut systems will be disabled
@@ -69,3 +72,6 @@ const int two_step_levels[] = {
 #define OUT_COIL_1_CUT 11
 #define OUT_COIL_2_CUT 12
 #define OUT_STATUS_LED 13
+
+
+#endif

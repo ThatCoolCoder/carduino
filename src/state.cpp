@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-#include "config.hpp"
-#include "confighelpers.hpp"
+#include "state.hpp"
 
 bool unlocked = false;
 bool locked_out = false;
@@ -65,3 +64,5 @@ void resetNonSecurity()
 
     soft_cut_was_on_coil_1 = false;
 }
+
+

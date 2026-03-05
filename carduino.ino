@@ -1,12 +1,12 @@
 
-#include "src/blink.cpp"
-#include "src/buttons.cpp"
+#include "src/blink.hpp"
+#include "src/buttons.hpp"
 #include "src/config.hpp"
 #include "src/confighelpers.hpp"
-#include "src/pedals.cpp"
-#include "src/security.cpp"
-#include "src/sparkcut.cpp"
-#include "src/state.cpp"
+#include "src/pedals.hpp"
+#include "src/security.hpp"
+#include "src/sparkcut.hpp"
+#include "src/state.hpp"
 
 void setup()
 {

@@ -1,8 +1,10 @@
 #include <Arduino.h>
 
+#include "pedals.hpp"
+
 #include "config.hpp"
 #include "confighelpers.hpp"
-#include "state.cpp"
+#include "state.hpp"
 
 void readPedals()
 {
@@ -11,3 +13,5 @@ void readPedals()
     clutch_pressed = digitalRead(IN_CLUTCH) == LOW;
     accel_pressed = digitalRead(IN_ACCEL) == LOW;
 }
+
+

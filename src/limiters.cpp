@@ -1,6 +1,8 @@
 #include <Arduino.h>
 
-#include "state.cpp"
+#include "limiters.hpp"
+
+#include "state.hpp"
 
 void hardLimiter(int target_rpm, int cut_time, bool* coil_1_cut, bool* coil_2_cut)
 {
@@ -58,3 +60,5 @@ void softLimiter(int target_rpm, int soft_cut_region, bool* coil_1_cut, bool* co
         *coil_2_cut = false;
     }
 }
+
+

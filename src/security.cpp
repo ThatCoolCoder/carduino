@@ -1,9 +1,10 @@
 #include <Arduino.h>
 
+#include "security.hpp"
+
 #include "config.hpp"
 #include "confighelpers.hpp"
-#include "state.cpp"
-
+#include "state.hpp"
 
 void checkSecurity()
 {
@@ -27,3 +28,5 @@ void checkSecurity()
         digitalWrite(OUT_HORN, HIGH);
     }
 }
+
+

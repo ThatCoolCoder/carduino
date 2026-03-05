@@ -1,8 +1,10 @@
 #include <Arduino.h>
 
+#include "blink.hpp"
+
 #include "config.hpp"
 #include "confighelpers.hpp"
-#include "state.cpp"
+#include "state.hpp"
 
 
 void blinkCode(int blinks, int blink_duration, int pause_duration)
@@ -20,3 +22,5 @@ void blinkCode(int blinks, int blink_duration, int pause_duration)
         if (i != blinks - 1) delay(pause_duration);
     }
 }
+
+
