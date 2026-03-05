@@ -1,7 +1,7 @@
+#include "src/config.hpp"
 
 #include "src/blink.hpp"
 #include "src/buttons.hpp"
-#include "src/config.hpp"
 #include "src/confighelpers.hpp"
 #include "src/pedals.hpp"
 #include "src/security.hpp"
