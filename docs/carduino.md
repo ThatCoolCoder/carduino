@@ -1,4 +1,4 @@
-# carduino - general design document
+# carduino - old general design document
 
 ## controlled functions
 - killswitch

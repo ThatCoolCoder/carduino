@@ -10,9 +10,9 @@
 #define MIN_SAFE_RPM 2000
 #define MAX_SAFE_RPM 7500
 
+#define SECURITY_ENABLED true
 #define MASTER_SWITCH_ENABLED true // if false, will just assume is safe instead of using master switch
 #define STATUS_LED_ENABLED true
-#define SECURITY_ENABLED true
 #define SPARK_CUT_ENABLED true
 #define PEDALS_ENABLED true // whether pedal-related functionality for two-step and no lift is available
 #define MANUAL_CUT_ENABLED true
@@ -20,8 +20,8 @@
 
 #define GLOBAL_LIMITER_ENABLED true
 #define GLOBAL_LIMITER_DEFAULT_CUT HARD
-#define GLOBAL_LIMITER_HARD_CUT_DURATION 500
-#define GLOBAL_LIMITER_SOFT_CUT_REGION 300
+#define GLOBAL_LIMITER_HARD_CUT_DURATION 500 // Duration in millis
+#define GLOBAL_LIMITER_SOFT_CUT_REGION 300 // RPM below the actual limiter value where the first coil cuts
 #define GLOBAL_LIMITER_LEVEL_COUNT 4
 const int global_limiter_levels[] = {
     5000,
@@ -50,8 +50,7 @@ const int two_step_levels[] = {
 
 
 // Pins configuration
-// Stuff that isn't ENABLED above doesn't need to be wired or configured below
-// Use common sense to determine what pins are needed for what function
+// It doesn't matter what value you use for features that aren't enabled
 #define IN_MASTER A0
 #define IN_UNLOCK A1
 #define IN_STARTER A2
