@@ -4,11 +4,10 @@
 #include "src/buttons.hpp"
 #include "src/confighelpers.hpp"
 #include "src/pedals.hpp"
+#include "src/rpm.hpp"
 #include "src/security.hpp"
 #include "src/sparkcut.hpp"
 #include "src/state.hpp"
-
-String s;
 
 void setup()
 {
@@ -17,7 +16,8 @@ void setup()
     INPUT_IF(MASTER_SWITCH_ENABLED, IN_MASTER);
     INPUT_IF(SECURITY_ENABLED, IN_UNLOCK);
     INPUT_IF(SECURITY_ENABLED, IN_STARTER);
-    INPUT_IF(RPM_ENABLED, IN_RPM_SIGNAL); // TODO: figure how rpm works
+    INPUT_IF(RPM_ENABLED, IN_RPM_SIGNAL);
+    if (RPM_ENABLED) attachInterrupt(digitalPinToInterrupt(IN_RPM_SIGNAL), logRpmPulse, FALLING);
     INPUT_IF(GLOBAL_LIMITER_ENABLED, IN_GLOBAL_LIMITER_SETTING);
     INPUT_IF(PEDALS_ENABLED, IN_CLUTCH);
     INPUT_IF(PEDALS_ENABLED, IN_ACCEL);
@@ -60,13 +60,17 @@ void loop()
 
     if (RPM_ENABLED)
     {
-        // todo: read rpm
-
-        if (rpm < MIN_SAFE_RPM || rpm > MAX_SAFE_RPM)
+        if (millis() - last_rpm_query > RPM_QUERY_INTERVAL)
         {
-            safen();
-            delay(100);
-            return;
+            queryRpm();
+            if (TEST_LOG_RPM) Serial.println(rpm);
+
+            if (rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
+            {
+                safen();
+                delay(100);
+                return;
+            }
         }
     }
 

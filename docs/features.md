@@ -10,7 +10,7 @@ On a failed start attempt, the system will lock out until you turn the ignition 
 
 ## Global master switch
 
-It's designed for the main control panel to be quickly removable so it can be hidden if needed. A pin can be set up to act as the master switch, which puts the system into a safe mode where it does nothing except allow security functionality.
+It's designed for the main control panel to be quickly removable so it can be hidden if needed. A pin can be set up to act as the master switch. Whenever this is disconnected from ground, the system enters a safe mode where it does nothing except allow security functionality.
 
 ## Status LED
 

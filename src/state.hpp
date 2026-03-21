@@ -24,10 +24,12 @@ extern bool accel_pressed;
 extern bool clutch_pressed;
 
 extern int rpm;
+extern int rpm_pulse_count;
+extern unsigned long last_rpm_query;
 
+extern unsigned long last_hard_cut;
+extern unsigned long last_soft_cut_switch;
 extern bool soft_cut_was_on_coil_1;
-
-extern long last_hard_cut;
 
 void safen();
 

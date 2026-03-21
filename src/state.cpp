@@ -21,15 +21,17 @@ bool accel_pressed = false;
 bool clutch_pressed = false;
 
 int rpm = 3000;
+int rpm_pulse_count = 0;
+unsigned long last_rpm_query = 0;
 
+unsigned long last_hard_cut = 0;
+unsigned long last_soft_cut_switch = 0;
 bool soft_cut_was_on_coil_1 = false;
-
-long last_hard_cut = 0;
 
 void safen()
 {
-
     // reset the outputs and constantly changing variables, but not the config stuff
+    // also not rpm cuz rpm determines if is safe
 
     if (STATUS_LED_ENABLED) digitalWrite(OUT_STATUS_LED, LOW);
     if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
@@ -43,6 +45,8 @@ void safen()
     clutch_pressed = false;
 
     last_hard_cut = 0;
+    last_soft_cut_switch = 0;
+    soft_cut_was_on_coil_1 = false;
 }
 
 
@@ -57,7 +61,14 @@ void resetSecurity()
 
 void resetNonSecurity()
 {
+
+    // use safen then reset everything else - ie config stuff and RPM
     safen();
+
+
+    rpm_pulse_count = 0;
+    last_rpm_query = millis();
+
 
     two_step_level_idx = 0;
     two_step_cut_mode = TWO_STEP_DEFAULT_CUT;
@@ -65,7 +76,6 @@ void resetNonSecurity()
     global_limiter_cut_mode = GLOBAL_LIMITER_DEFAULT_CUT;
     rolling_cut_mode = ROLLING_DEFAULT_CUT;
 
-    soft_cut_was_on_coil_1 = false;
 }
 
 

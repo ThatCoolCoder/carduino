@@ -29,30 +29,33 @@ void hardLimiter(int target_rpm, int cut_time, bool* coil_1_cut, bool* coil_2_cu
     }
 }
 
-void softLimiter(int target_rpm, int soft_cut_region, bool* coil_1_cut, bool* coil_2_cut)
+void softLimiter(int target_rpm, int soft_cut_region, int soft_cut_speed, bool* coil_1_cut, bool* coil_2_cut)
 {
     // If is within soft_cut_region below the limit, only cut 1 coil
     // else cut 2 but only as short as needed
 
     if (rpm > target_rpm)
     {
-            *coil_1_cut = true;
-            *coil_2_cut = true;
+        *coil_1_cut = true;
+        *coil_2_cut = true;
     }
     else if (rpm > target_rpm - soft_cut_region)
     {
-        if (soft_cut_was_on_coil_1)
+        if (millis() - last_soft_cut_switch > soft_cut_speed)
         {
-            *coil_1_cut = false;
-            *coil_2_cut = true;
+            last_soft_cut_switch = millis();
+            if (soft_cut_was_on_coil_1)
+            {
+                *coil_1_cut = false;
+                *coil_2_cut = true;
+            }
+            else
+            {
+                *coil_1_cut = true;
+                *coil_2_cut = false;
+            }
+            soft_cut_was_on_coil_1 = ! soft_cut_was_on_coil_1;
         }
-        else
-        {
-            *coil_1_cut = true;
-            *coil_2_cut = false;
-        }
-
-        soft_cut_was_on_coil_1 = ! soft_cut_was_on_coil_1;
     }
     else
     {

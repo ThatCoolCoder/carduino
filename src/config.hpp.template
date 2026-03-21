@@ -7,8 +7,8 @@
 
 
 // readings outside of this range will be considered nonsense and all spark-cut systems will be disabled
-#define MIN_SAFE_RPM 2000
-#define MAX_SAFE_RPM 7500
+#define MIN_ACTIVE_RPM 2000
+#define MAX_ACTIVE_RPM 10000
 
 #define LONG_PRESS_DURATION 1000 // determiner of long/short press on buttons
 
@@ -20,10 +20,16 @@
 #define MANUAL_CUT_ENABLED true
 #define NO_LIFT_ENABLED true
 
+#define RPM_ENABLED true
+#define RPM_QUERY_INTERVAL 50
+#define RPM_PULSES_PER_REVOLUTION 4 // may be either 1, your number of cylinders, or half your number of cylinders
+#define TEST_LOG_RPM true
+
 #define GLOBAL_LIMITER_ENABLED true
 #define GLOBAL_LIMITER_DEFAULT_CUT HARD
 #define GLOBAL_LIMITER_HARD_CUT_DURATION 500 // Duration in millis
 #define GLOBAL_LIMITER_SOFT_CUT_REGION 300 // RPM below the actual limiter value where the first coil cuts
+#define GLOBAL_LIMITER_SOFT_CUT_SPEED 100 // Time between switching coils
 #define GLOBAL_LIMITER_LEVEL_COUNT 4
 const int global_limiter_levels[] = {
     5000,
@@ -36,6 +42,7 @@ const int global_limiter_levels[] = {
 #define TWO_STEP_DEFAULT_CUT HARD
 #define TWO_STEP_HARD_CUT_DURATION 300
 #define TWO_STEP_SOFT_CUT_REGION 300
+#define TWO_STEP_SOFT_CUT_SPEED 100
 #define TWO_STEP_LEVEL_COUNT 4
 const int two_step_levels[] = {
     0, // 0 means not active
@@ -48,6 +55,7 @@ const int two_step_levels[] = {
 #define ROLLING_DEFAULT_CUT SOFT
 #define ROLLING_HARD_CUT_DURATION 300
 #define ROLLING_SOFT_CUT_REGION 300
+#define ROLLING_SOFT_CUT_SPEED 100
 
 
 

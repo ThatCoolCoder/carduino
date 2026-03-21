@@ -8,8 +8,8 @@
 #include "config.hpp"
 #include "state.hpp"
 
-int two_step_last_pressed = 0;
-int global_limiter_last_pressed = 0;
+unsigned long two_step_last_pressed = 0;
+unsigned long global_limiter_last_pressed = 0;
 
 void two_step_cut_mode_handler(uint8_t btnId, uint8_t btnState)
 {
