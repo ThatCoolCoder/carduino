@@ -4,6 +4,6 @@
 
 void logRpmPulse();
 
-void queryRpm();
+void updateRpm();
 
 #endif

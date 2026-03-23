@@ -8,17 +8,16 @@
 
 void logRpmPulse()
 {
-    rpm_pulse_count ++;
+    rpm_pulse_idx ++;
+    rpm_pulse_times[rpm_pulse_idx] = millis();
 }
 
-void queryRpm()
+void updateRpm()
 {
-    unsigned long now = millis(); // save this and reuse when setting last query so we don't end up not counting the cycles taken up by this function
+    int total_time = rpm_pulse_times[rpm_pulse_idx] - rpm_pulse_times[(rpm_pulse_idx + 1) % (RPM_SMOOTHNESS + 1)];
+    float avg_time = (float) total_time / RPM_SMOOTHNESS;
 
-    float rpm_pulse_hz = (float) rpm_pulse_count / (float) (now - last_rpm_query);
+    float rpm_pulse_hz = 1.0f / avg_time * 1000.0;
 
     rpm = (int) (rpm_pulse_hz / (float) RPM_PULSES_PER_REVOLUTION * 60.0f);
-
-    last_rpm_query = now;
-    rpm_pulse_count = 0;
 }

@@ -60,17 +60,14 @@ void loop()
 
     if (RPM_ENABLED)
     {
-        if (millis() - last_rpm_query > RPM_QUERY_INTERVAL)
-        {
-            queryRpm();
-            if (TEST_LOG_RPM) Serial.println(rpm);
+        updateRpm();
+        if (TEST_LOG_RPM) Serial.println(rpm);
 
-            if (rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
-            {
-                safen();
-                delay(100);
-                return;
-            }
+        if (false && rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
+        {
+            safenOutputs();
+            delay(100);
+            return;
         }
     }
 
