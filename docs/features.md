@@ -38,7 +38,7 @@ There is also a switch to enable/disable it while driving as it may be undesired
 
 Reads tachometer signal to determine engine RPM, to be used in other features.
 
-## Limiters (all require rpm reading and spark cuts)
+## Limiters (all require rpm reading and spark cut)
 
 Various RPM limiters are present, using either a soft or hard limiter.
 
@@ -50,7 +50,7 @@ The limiter parameters can be configured individually for each sub-feature, and 
 
 ### Global limiter
 
-RPM limiter that is always active (providing system is not in safe mode). Useful if your engine has no limiter, or you would like to have something lower. Can cycle through preset levels (including disabled) while driving and switch type.
+RPM limiter that is always active (providing system is not in safe mode). Useful if your engine has no limiter, or you would like to have something lower & harsher. Can cycle through preset levels (including disabled) while driving and switch type.
 
 ### 2 step (optionally requires pedals)
 

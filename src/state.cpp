@@ -54,9 +54,20 @@ void resetSecurity()
 {
     REQUIRE_ENABLED(SECURITY_ENABLED);
 
-    unlocked = false;
-    digitalWrite(OUT_FUEL_PUMP, LOW);
-    digitalWrite(OUT_HORN, LOW);
+    locked_out = false;
+
+    if (SECURITY_ENABLED == START_UNLOCKED)
+    {
+        unlocked = true;
+        digitalWrite(OUT_FUEL_PUMP, HIGH);
+        digitalWrite(OUT_HORN, LOW);
+    }
+    else
+    {
+        unlocked = false;
+        digitalWrite(OUT_FUEL_PUMP, LOW);
+        digitalWrite(OUT_HORN, LOW);
+    }
 }
 
 void resetNonSecurity()

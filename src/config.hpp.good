@@ -12,11 +12,11 @@
 
 #define LONG_PRESS_DURATION 1000 // determiner of long/short press on buttons
 
-#define SECURITY_ENABLED true // can set to START_UNLOCKED if security is wired up but you don't want to use it
-#define MASTER_SWITCH_ENABLED true // if false, will just assume is safe instead of using master switch
+#define SECURITY_ENABLED START_UNLOCKED // can set to DO_NOT_LOCK if security is wired up but you don't want to use it
+#define MASTER_SWITCH_ENABLED true // if false, will act as if master switch is always pressed
 #define STATUS_LED_ENABLED true
 #define SPARK_CUT_ENABLED true
-#define PEDALS_ENABLED true // whether pedal-related functionality for two-step and no lift is available
+#define PEDALS_ENABLED true // whether pedal-related functionality for two-step and no lift is available. optional for two-step, required for no lift
 #define MANUAL_CUT_ENABLED true
 #define NO_LIFT_ENABLED true
 
@@ -39,7 +39,7 @@ const int global_limiter_levels[] = {
 };
 
 #define TWO_STEP_ENABLED true
-#define TWO_STEP_DEFAULT_CUT HARD
+#define TWO_STEP_DEFAULT_CUT SOFT
 #define TWO_STEP_HARD_CUT_DURATION 300
 #define TWO_STEP_SOFT_CUT_REGION 300
 #define TWO_STEP_SOFT_CUT_SPEED 100
@@ -54,32 +54,32 @@ const int two_step_levels[] = {
 #define ROLLING_CUT_ENABLED true
 #define ROLLING_DEFAULT_CUT SOFT
 #define ROLLING_HARD_CUT_DURATION 300
-#define ROLLING_SOFT_CUT_REGION 300
+#define ROLLING_SOFT_CUT_REGION 200
 #define ROLLING_SOFT_CUT_SPEED 100
 
 
 
 // Pins configuration
 // It doesn't matter what value you use for features that aren't enabled
-#define IN_MASTER A0
-#define IN_UNLOCK A1
-#define IN_STARTER A2
-#define IN_RPM_SIGNAL A3
-#define IN_GLOBAL_LIMITER_SETTING A4
-#define IN_ROLLING_CUT_SETTING A5
+#define IN_MASTER 6
+#define IN_UNLOCK A0
+#define IN_STARTER A1
+#define IN_RPM_SIGNAL 2
+#define IN_GLOBAL_LIMITER_SETTING 7
+#define IN_ROLLING_CUT_SETTING 8
 
-#define IN_CLUTCH 2
-#define IN_ACCEL 3
-#define IN_NO_LIFT_SELECT_SWITCH 4
-#define IN_SPARK_CUT_MANUAL 5
-#define IN_TWO_STEP_SETTING 6
-#define IN_TWO_STEP_ACTIVE 7
-#define IN_ROLLING_CUT_ACTIVE 8
+#define IN_CLUTCH A5
+#define IN_ACCEL A4
+#define IN_NO_LIFT_SELECT_SWITCH 9
+#define IN_SPARK_CUT_MANUAL A2
+#define IN_TWO_STEP_SETTING 10
+#define IN_TWO_STEP_ACTIVE 11
+#define IN_ROLLING_CUT_ACTIVE 12
 
-#define OUT_HORN 9
-#define OUT_FUEL_PUMP 10
-#define OUT_COIL_1_CUT 11
-#define OUT_COIL_2_CUT 12
+#define OUT_HORN 5
+#define OUT_FUEL_PUMP A3
+#define OUT_COIL_1_CUT 3
+#define OUT_COIL_2_CUT 4
 #define OUT_STATUS_LED 13
 
 

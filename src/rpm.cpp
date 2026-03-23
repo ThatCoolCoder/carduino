@@ -17,7 +17,7 @@ void queryRpm()
 
     float rpm_pulse_hz = (float) rpm_pulse_count / (float) (now - last_rpm_query);
 
-
+    rpm = (int) (rpm_pulse_hz / (float) RPM_PULSES_PER_REVOLUTION * 60.0f);
 
     last_rpm_query = now;
     rpm_pulse_count = 0;
