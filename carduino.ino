@@ -38,43 +38,51 @@ void setup()
     resetSecurity();
     resetNonSecurity();
 
-    blinkCode(2, 200, 50);
+    queueBlinkCode(2, 200, 50);
+    // todo: manual blink code and make pre-security slower loop
+
+    Serial.println("Booted!");
+
 }
 
 void loop()
 {
-    if (SECURITY_ENABLED && ! unlocked)
+    manageLedBlinks();
+
+    delay(5); // has to be here so that led blink has precedence over spark cut flash
+    // should really just move ALL led control to the blink module so it can prioritise as needed
+
+    if (SECURITY_ENABLED)
     {
-        checkSecurity();
-        delay(10);
-        return;
+        doSecurity();
+        if (! unlocked)
+        {
+            delay(10);
+            return;
+        }
     }
 
     if (MASTER_SWITCH_ENABLED && digitalRead(IN_MASTER) == HIGH)
     {
         resetNonSecurity();
-        delay(100);
+        delay(10);
         return;
     }
 
 
+    readPedals();
+    updateButtons();
+
     if (RPM_ENABLED)
     {
         updateRpm();
-        if (TEST_LOG_RPM) Serial.println(rpm);
 
-        if (false && rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
+        if (rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
         {
             safenOutputs();
-            delay(100);
             return;
         }
     }
 
-    readPedals();
-    updateButtons();
     manageSparkCut();
-
-
-    delay(10);
 }

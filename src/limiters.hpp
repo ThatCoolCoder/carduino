@@ -1,8 +1,8 @@
 #ifndef LIMITERS
 #define LIMITERS
 
-void hardLimiter(int target_rpm, int cut_time, bool* coil_1_cut, bool* coil_2_cut);
+#include "limiter_definitions.hpp"
 
-void softLimiter(int target_rpm, int soft_cut_region, int soft_cut_speed, bool* coil_1_cut, bool* coil_2_cut);
+void delegateLimiter(int target_rpm, LimiterPreset* p, bool* c1, bool* c2);
 
 #endif

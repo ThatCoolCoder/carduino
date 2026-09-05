@@ -6,10 +6,15 @@
 #include "confighelpers.hpp"
 #include "state.hpp"
 
-void checkSecurity()
+void doSecurity()
 {
     REQUIRE_ENABLED(SECURITY_ENABLED);
-    if (unlocked || locked_out) return;
+    if (locked_out) return;
+    if (unlocked)
+    {
+        digitalWrite(OUT_FUEL_PUMP, HIGH); // keep this enabled in case relay module has brief power interrupt and forgets fuel pump on
+        return;
+    }
 
     bool starting = digitalRead(IN_STARTER) == LOW;
     bool unlock_button = digitalRead(IN_UNLOCK) == LOW;

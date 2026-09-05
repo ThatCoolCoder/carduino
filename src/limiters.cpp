@@ -4,64 +4,90 @@
 
 #include "state.hpp"
 
-void hardLimiter(int target_rpm, int cut_time, bool* coil_1_cut, bool* coil_2_cut)
+void hardSimple(int target_rpm, bool* c1, bool* c2)
 {
-    // Cut both coils whenever rpm > target, and don't uncut for at least cut_time
-
-    bool in_window = (millis() - last_hard_cut) < cut_time;
-
     if (rpm > target_rpm)
     {
-        if (! in_window) last_hard_cut = millis();
-
-        *coil_1_cut = true;
-        *coil_2_cut = true;
-    }
-    else if (in_window)
-    {
-        *coil_1_cut = true;
-        *coil_2_cut = true;
-    }
-    else
-    {
-        *coil_1_cut = false;
-        *coil_2_cut = false;
+        *c1 = true;
+        *c2 = true;
     }
 }
 
-void softLimiter(int target_rpm, int soft_cut_region, int soft_cut_speed, bool* coil_1_cut, bool* coil_2_cut)
+void hardTime(int target_rpm, int cut_time, bool use_early_timing, bool* c1, bool* c2)
 {
-    // If is within soft_cut_region below the limit, only cut 1 coil
-    // else cut 2 but only as short as needed
+    unsigned long now = millis();
 
-    if (rpm > target_rpm)
+    bool in_window = (now - last_cut_time) < cut_time;
+
+    if (rpm > target_rpm || in_window)
     {
-        *coil_1_cut = true;
-        *coil_2_cut = true;
+        *c1 = true;
+        *c2 = true;
     }
-    else if (rpm > target_rpm - soft_cut_region)
+
+    if (use_early_timing)
     {
-        if (millis() - last_soft_cut_switch > soft_cut_speed)
-        {
-            last_soft_cut_switch = millis();
-            if (soft_cut_was_on_coil_1)
-            {
-                *coil_1_cut = false;
-                *coil_2_cut = true;
-            }
-            else
-            {
-                *coil_1_cut = true;
-                *coil_2_cut = false;
-            }
-            soft_cut_was_on_coil_1 = ! soft_cut_was_on_coil_1;
-        }
+        if (rpm > target_rpm && ! in_window) last_cut_time = now; // count from when enters limiter
     }
-    else
+    else if (rpm > target_rpm) last_cut_time = now; // count from when leaves limiter
+}
+
+void hardRpmHysteresis(int target_rpm, int rpm_range, bool* c1, bool* c2)
+{
+    if (rpm > target_rpm) hysteresis_cut_active = true;
+
+    if (hysteresis_cut_active)
     {
-        *coil_1_cut = false;
-        *coil_2_cut = false;
+        *c1 = true;
+        *c2 = true;
+    }
+
+    if (hysteresis_cut_active && rpm < (target_rpm - rpm_range)) hysteresis_cut_active = false;
+}
+
+void softRaw(int target_rpm, int speed, int size, bool* c1, bool* c2)
+{
+    if (rpm > target_rpm - size)
+    {
+        if (soft_cut_coil_2) *c2 = true;
+        else *c1 = true;
+    }
+
+    unsigned long now = millis();
+    if (now - soft_cut_switch_time > speed)
+    {
+        soft_cut_switch_time = now;
+        soft_cut_coil_2 = ! soft_cut_coil_2;
     }
 }
 
+void softSimple(int target_rpm, int speed, int size, bool* c1, bool* c2)
+{
+    hardSimple(target_rpm, c1, c2);
 
+    softRaw(target_rpm, speed, size, c1, c2);
+}
+
+void softTime(int target_rpm, int speed, int size, int cut_time, bool use_early_timing, bool* c1, bool* c2)
+{
+    hardTime(target_rpm, cut_time, use_early_timing, c1, c2);
+
+    softRaw(target_rpm, speed, size, c1, c2);
+}
+
+void softRpmHysteresis(int target_rpm, int speed, int size, int hard_cut_rpm_hysteresis, bool* c1, bool* c2)
+{
+    hardRpmHysteresis(target_rpm, hard_cut_rpm_hysteresis, c1, c2);
+
+    softRaw(target_rpm, speed, size, c1, c2);
+}
+
+void delegateLimiter(int target_rpm, LimiterPreset* p, bool* c1, bool* c2)
+{
+    if (p->type == HardSimple) hardSimple(target_rpm, c1, c2);
+    if (p->type == HardTime) hardTime(target_rpm, p->param1, p->param2, c1, c2);
+    if (p->type == HardRpmHysteresis) hardRpmHysteresis(target_rpm, p->param1, c1, c2);
+    if (p->type == SoftSimple) softSimple(target_rpm, p->param1, p->param2, c1, c2);
+    if (p->type == SoftTime) softTime(target_rpm, p->param1, p->param2, p->param3, p->param4, c1, c2);
+    if (p->type == SoftRpmHysteresis) softRpmHysteresis(target_rpm, p->param1, p->param2, p->param3, c1, c2);
+}

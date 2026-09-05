@@ -1,6 +1,6 @@
 #ifndef SECURITY
 #define SECURITY
 
-void checkSecurity();
+void doSecurity();
 
 #endif

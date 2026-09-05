@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "state.hpp"
 
+
 unsigned long two_step_last_pressed = 0;
 unsigned long global_limiter_last_pressed = 0;
 
@@ -19,8 +20,9 @@ void two_step_cut_mode_handler(uint8_t btnId, uint8_t btnState)
     }
     if (btnState == BTN_OPEN && millis() - two_step_last_pressed < LONG_PRESS_DURATION)
     {
-        two_step_cut_mode = !two_step_cut_mode;
-        blinkCode(two_step_cut_mode + 1, 100, 100);
+        two_step_cut_type ++;
+        two_step_cut_type %= TWO_STEP_PRESET_COUNT;
+        queueBlinkCode(two_step_cut_type + 1, 100, 100);
     }
 }
 
@@ -29,8 +31,8 @@ void two_step_level_handler(uint8_t btnId, uint8_t btnState)
     if (btnState == BTN_PRESSED)
     {
         two_step_level_idx ++;
-        if (two_step_level_idx >= TWO_STEP_LEVEL_COUNT) two_step_level_idx = 0;
-        blinkCode(two_step_level_idx + 1, 100, 100);
+        two_step_level_idx %= TWO_STEP_LEVEL_COUNT;
+        queueBlinkCode(two_step_level_idx + 1, 100, 100);
     }
 }
 
@@ -45,8 +47,9 @@ void global_limiter_cut_mode_handler(uint8_t btnId, uint8_t btnState)
     }
     if (btnState == BTN_OPEN && millis() - global_limiter_last_pressed < LONG_PRESS_DURATION)
     {
-        global_limiter_cut_mode = !global_limiter_cut_mode;
-        blinkCode(global_limiter_cut_mode + 1, 100, 100);
+        global_limiter_cut_type ++;
+        global_limiter_cut_type %= GLOBAL_LIMITER_PRESET_COUNT;
+        queueBlinkCode(global_limiter_cut_type + 1, 100, 100);
     }
 }
 
@@ -56,7 +59,7 @@ void global_limiter_level_handler(uint8_t btnId, uint8_t btnState)
     {
         global_limiter_level_idx ++;
         if (global_limiter_level_idx >= GLOBAL_LIMITER_LEVEL_COUNT) global_limiter_level_idx = 0;
-        blinkCode(global_limiter_level_idx + 1, 100, 100);
+        queueBlinkCode(global_limiter_level_idx + 1, 100, 100);
     }
 }
 
@@ -67,8 +70,9 @@ void rolling_cut_mode_handler(uint8_t btnId, uint8_t btnState)
 {
     if (btnState == BTN_PRESSED)
     {
-        rolling_cut_mode = !rolling_cut_mode;
-        blinkCode(rolling_cut_mode + 1, 100, 100);
+        rolling_cut_type ++;
+        rolling_cut_type %= ROLLING_CUT_PRESET_COUNT;
+        queueBlinkCode(rolling_cut_type + 1, 100, 100);
     }
 }
 
@@ -77,6 +81,7 @@ void rolling_cut_handler(uint8_t btnId, uint8_t btnState)
     if (btnState == BTN_PRESSED && rolling_cut_target_rpm == 0)
     {
         rolling_cut_target_rpm = rpm;
+        resetLimiters();
     }
     else
     {

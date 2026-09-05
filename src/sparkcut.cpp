@@ -5,6 +5,7 @@
 #include "config.hpp"
 #include "confighelpers.hpp"
 #include "limiters.hpp"
+#include "limiter_definitions.hpp"
 #include "state.hpp"
 
 bool checkManualCut()
@@ -18,7 +19,7 @@ bool checkManualCut()
 
 void checkNoLift()
 {
-    if (! NO_LIFT_ENABLED || digitalRead(IN_NO_LIFT_SELECT_SWITCH) == HIGH)
+    if (! NO_LIFT_ENABLED || digitalRead(IN_NO_LIFT_SELECT_SWITCH) == HIGH || two_step_active)
     {
         no_lift_active = false;
         return;
@@ -27,13 +28,13 @@ void checkNoLift()
 
     if (no_lift_active)
     {
-        // stay on until clutch is released (means that if accel is instinctively released, doesn't drive)
+        // stay on until clutch is released (means that if driver releases accelerator out of habit, it doesn't start firing)
         if (! clutch_pressed) no_lift_active = false;
     }
     else
     {
         // trigger on
-        if (clutch_pressed && accel_pressed) no_lift_active = true;
+        if (clutch_pressed && millis() - accel_last_pressed < NO_LIFT_ACCEL_TIMEOUT) no_lift_active = true;
     }
 
 }
@@ -42,10 +43,14 @@ void check2Step()
 {
     REQUIRE_ENABLED(TWO_STEP_ENABLED);
 
-    if (digitalRead(IN_TWO_STEP_ACTIVE) == LOW) two_step_active = true;
+    if (digitalRead(IN_TWO_STEP_ACTIVE) == LOW)
+    {
+        if (! two_step_active) resetLimiters();
+        two_step_active = true;
+    }
     // have chosen to make this stay on even if you let off accel,
     // so that you can let off accel if unhappy without starting revinations
-    else if (! clutch_pressed) two_step_active = false;
+    else if (! PEDALS_ENABLED || ! clutch_pressed) two_step_active = false;
 }
 
 void manageSparkCut()
@@ -54,43 +59,49 @@ void manageSparkCut()
 
     bool manual_cut_active = checkManualCut();
 
+    check2Step(); // check first as no lift needs to not activate if 2 step is on
     checkNoLift();
-    check2Step();
 
-    bool coil_1_cut = false;
-    bool coil_2_cut = false;
+    bool c1 = false;
+    bool c2 = false;
 
     if (GLOBAL_LIMITER_ENABLED && global_limiter_levels[global_limiter_level_idx] > 0)
     {
-        if (global_limiter_cut_mode == HARD) hardLimiter(global_limiter_levels[global_limiter_level_idx], GLOBAL_LIMITER_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
-        else softLimiter(global_limiter_levels[global_limiter_level_idx], GLOBAL_LIMITER_SOFT_CUT_REGION, GLOBAL_LIMITER_SOFT_CUT_SPEED, &coil_1_cut, &coil_2_cut);
+        delegateLimiter(global_limiter_levels[global_limiter_level_idx],
+            &global_limiter_presets[global_limiter_cut_type], &c1, &c2);
     }
 
-    // Prevent limiters messing w each other
-    if (! coil_1_cut && ! coil_2_cut)
+    // Prevent other limiter overriding global limiter if that is already active
+    if (! (c1 || c2))
     {
         if (manual_cut_active || no_lift_active)
         {
-            coil_1_cut = true;
-            coil_2_cut = true;
+            c1 = true;
+            c2 = true;
         }
         else if (two_step_active && two_step_levels[two_step_level_idx] > 0)
         {
-            if (two_step_cut_mode == HARD) hardLimiter(two_step_levels[two_step_level_idx], TWO_STEP_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
-            else softLimiter(two_step_levels[two_step_level_idx], TWO_STEP_SOFT_CUT_REGION, TWO_STEP_SOFT_CUT_SPEED, &coil_1_cut, &coil_2_cut);
+            delegateLimiter(two_step_levels[two_step_level_idx],
+                &two_step_presets[two_step_cut_type], &c1, &c2);
         }
         else if (rolling_cut_target_rpm > 0)
-        {
-            if (rolling_cut_mode == HARD) hardLimiter(rolling_cut_target_rpm, ROLLING_HARD_CUT_DURATION, &coil_1_cut, &coil_2_cut);
-            else softLimiter(rolling_cut_target_rpm, ROLLING_SOFT_CUT_REGION, ROLLING_SOFT_CUT_SPEED, &coil_1_cut, &coil_2_cut);
+        {	
+            delegateLimiter(rolling_cut_target_rpm,
+                &rolling_cut_presets[rolling_cut_type], &c1, &c2);
         }
     }
 
-    if (coil_1_cut) digitalWrite(OUT_COIL_1_CUT, HIGH);
+    if (c1) digitalWrite(OUT_COIL_1_CUT, HIGH);
     else digitalWrite(OUT_COIL_1_CUT, LOW);
 
-    if (coil_2_cut) digitalWrite(OUT_COIL_2_CUT, HIGH);
+    if (c2) digitalWrite(OUT_COIL_2_CUT, HIGH);
     else digitalWrite(OUT_COIL_2_CUT, LOW);
+
+
+    if (FLASH_LED_ON_CUT_ENABLED)
+    {
+        digitalWrite(OUT_STATUS_LED, c1 || c2);
+    }
 }
 
 
