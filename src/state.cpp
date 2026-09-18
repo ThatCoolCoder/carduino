@@ -101,6 +101,10 @@ void resetNonSecurity()
     global_limiter_cut_type = 0;
     rolling_cut_type = 0;
 
+    rpm = 0;
+    last_valid_rpm_time = 0;
+    rpm_pulse_idx = 0;
+    // don't reset pulse times - this function gets called on bad rpm so it would be an infinite loop
 }
 
 
