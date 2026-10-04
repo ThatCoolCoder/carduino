@@ -30,7 +30,7 @@ void updateRpm()
         {
             Serial.print("rpm: ");
             Serial.print(new_rpm);
-            Serial.print(" (bad) - using stale reading of ")
+            Serial.print(" (bad) - using stale reading of ");
             Serial.println(rpm);
         }
         return;
@@ -38,7 +38,7 @@ void updateRpm()
 
     if (LOG_RPM)
     {
-        Serial.print("rpm: ")
+        Serial.print("rpm: ");
         Serial.println(new_rpm);
     }
     last_valid_rpm_time = now;

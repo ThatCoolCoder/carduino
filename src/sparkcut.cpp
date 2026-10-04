@@ -68,8 +68,8 @@ void count_cut_duration(bool c1, bool c2)
 
 
 #ifdef LOG_CUT_REASON
-    #define HELP_LOG_CUT_REASON_PRE pre_c1 = c1; pre_c2 = c2;
-    #define HELP_LOG_CUT_REASON_POST(reason) if ((c1 && ! pre_c1) || (c2 && ! pre_c2)) Serial.println("cut_reason: " + reason);
+    #define HELP_LOG_CUT_REASON_PRE bool pre_c1 = c1; bool pre_c2 = c2;
+    #define HELP_LOG_CUT_REASON_POST(reason) if ((c1 && ! pre_c1) || (c2 && ! pre_c2)) Serial.println("cut_reason: " reason);
 
 #else
     #define HELP_LOG_CUT_REASON_PRE {}

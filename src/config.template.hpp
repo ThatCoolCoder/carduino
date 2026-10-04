@@ -70,6 +70,7 @@
 #define LOG_CUT_STATUS false
 #define LOG_CUT_STATUS_WHEN_NO_CUT false
 #define LOG_CUT_REASON false
+#define LOG_PEDALS false
 #define LOG_SECURITY_STATUS false
 
 

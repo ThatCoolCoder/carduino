@@ -14,6 +14,13 @@ void readPedals()
     if (clutch_pressed) clutch_last_pressed = millis();
     accel_pressed = digitalRead(IN_ACCEL) == LOW;
     if (accel_pressed) accel_last_pressed = millis();
+
+    if (LOG_PEDALS)
+    {
+        Serial.print("pedals: ");
+        Serial.print(clutch_pressed ? "clutch " : "      ");
+        Serial.println(accel_pressed ? "accel" : "");
+    }
 }
 
 

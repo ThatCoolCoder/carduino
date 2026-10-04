@@ -12,7 +12,7 @@ void doSecurity()
     
     if (locked_out)
     {
-        if (LOG_SECURITY) Serial.println("security: locked out");
+        if (LOG_SECURITY_STATUS) Serial.println("security: locked out");
 
         digitalWrite(OUT_FUEL_PUMP, LOW);
         digitalWrite(OUT_HORN, HIGH);
@@ -38,7 +38,7 @@ void doSecurity()
         unlocked = true;
         digitalWrite(OUT_FUEL_PUMP, HIGH);
         digitalWrite(OUT_HORN, LOW);
-        if (LOG_SECURITY) Serial.println("security: logged in successfully");
+        if (LOG_SECURITY_STATUS) Serial.println("security: logged in successfully");
     }
 
     if (starting && ! unlock_button)
