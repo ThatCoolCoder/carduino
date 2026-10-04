@@ -8,5 +8,4 @@
 
 #define REQUIRE_ENABLED(condition) if (!condition) return
 
-
 #endif

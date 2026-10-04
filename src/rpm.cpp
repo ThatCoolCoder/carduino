@@ -21,22 +21,24 @@ void updateRpm()
     int new_rpm = 1000000.0f / avg_time / (float) RPM_PULSES_PER_REVOLUTION * 60.0f;
 
     long now = micros();
-    // todo: add configurability for this
 
     int delta = new_rpm - rpm;
 
-    if (abs(delta) > 500 && (now - last_valid_rpm_time) < 5000000L)
+    if (abs(delta) > RPM_MAX_JUMP && (now - last_valid_rpm_time) < RPM_MAX_STALE_DURATION_MS)
     {
-        if (TEST_LOG_RPM)
+        if (LOG_RPM)
         {
-            Serial.print("bad rpm:");
-            Serial.println(new_rpm);
+            Serial.print("rpm: ");
+            Serial.print(new_rpm);
+            Serial.print(" (bad) - using stale reading of ")
+            Serial.println(rpm);
         }
         return;
     }
 
-    if (TEST_LOG_RPM)
+    if (LOG_RPM)
     {
+        Serial.print("rpm: ")
         Serial.println(new_rpm);
     }
     last_valid_rpm_time = now;

@@ -30,10 +30,10 @@ extern long rpm_pulse_times[RPM_SMOOTHNESS + 1];
 extern int rpm_pulse_idx;
 extern long last_valid_rpm_time;
 
+extern unsigned long last_non_cut_time;
 extern unsigned long last_cut_time;
 extern bool hysteresis_cut_active;
-
-extern unsigned long soft_cut_switch_time;
+extern unsigned long last_soft_cut_switch_time;
 extern bool soft_cut_coil_2;
 
 typedef struct QueuedBlink

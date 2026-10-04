@@ -31,10 +31,10 @@ long rpm_pulse_times[RPM_SMOOTHNESS + 1];
 int rpm_pulse_idx = 0;
 long last_valid_rpm_time = 0;
 
+unsigned long last_non_cut_time = 0; // used for max cut duration
 unsigned long last_cut_time = 0;
 bool hysteresis_cut_active = false;
-
-unsigned long soft_cut_switch_time = 0;
+unsigned long last_soft_cut_switch_time = 0;
 bool soft_cut_coil_2 = false;
 
 cppQueue queue(sizeof(QueuedBlink), 20, FIFO, false);
@@ -50,6 +50,7 @@ void safenOutputs()
     if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
     if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_2_CUT, LOW);
 
+    last_non_cut_time = 0;
     no_lift_active = false;
     two_step_active = false;
     rolling_cut_target_rpm = 0;
@@ -63,7 +64,7 @@ void resetLimiters()
     last_cut_time = 0;
     hysteresis_cut_active = false;
 
-    soft_cut_switch_time = 0;
+    last_soft_cut_switch_time = 0;
     soft_cut_coil_2 = false;
 }
 

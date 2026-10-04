@@ -54,9 +54,9 @@ void softRaw(int target_rpm, int speed, int size, bool* c1, bool* c2)
     }
 
     unsigned long now = millis();
-    if (now - soft_cut_switch_time > speed)
+    if (now - last_soft_cut_switch_time > speed)
     {
-        soft_cut_switch_time = now;
+        last_soft_cut_switch_time = now;
         soft_cut_coil_2 = ! soft_cut_coil_2;
     }
 }

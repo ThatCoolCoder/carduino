@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "enums.hpp"
-#include "limiter_definitions.hpp"
+#include "limiter_configs.hpp"
 
 
 // PINS CONFIG
@@ -34,24 +34,18 @@
 #define OUT_STATUS_LED 13
 
 
-
-
 // GENERAL SETTINGS
 // ----------------
 
-// safe rpm range - readings beyond this will be considered nonsense and all spark-cut systems will be disabled
-#define MIN_ACTIVE_RPM 2000
-#define MAX_ACTIVE_RPM 10000
-
-#define LONG_PRESS_DURATION 300 // determiner of long/short press on buttons
+#define LONG_PRESS_DURATION_MS 300 // determiner of long/short press on buttons
 
 #define SECURITY_ENABLED true // can set to START_UNLOCKED if security is wired up but you don't want to use it
 #define MASTER_SWITCH_ENABLED true // if false, will act as if master switch is always pressed
 #define STATUS_LED_ENABLED true
 
-#define SPARK_CUT_ENABLED false
-#define FLASH_LED_ON_CUT_ENABLED false
-#define MANUAL_CUT_ENABLED false
+#define SPARK_CUT_ENABLED true
+#define FLASH_LED_ON_CUT_ENABLED true
+#define MANUAL_CUT_ENABLED true
 
 #define PEDALS_ENABLED true // whether pedal-related functionality for two-step and no lift is available. optional for two-step, required for no lift
 #define NO_LIFT_ENABLED true
@@ -59,8 +53,24 @@
 
 #define RPM_ENABLED true
 #define RPM_SMOOTHNESS 1 // higher values give a less noisy reading but also more latency
-#define RPM_PULSES_PER_REVOLUTION 1 // may be either 1, your number of cylinders, or half your number of cylinders (use TEST_LOG_RPM to find correct value)
-#define TEST_LOG_RPM false
+#define RPM_PULSES_PER_REVOLUTION 1 // may be either 1, your number of cylinders, or half your number of cylinders (use LOG_RPM to find correct value)
+#define RPM_MAX_JUMP 500 // if rpm jumps by more than this much between readings, it becomes invalid and the old "stale" reading remains
+#define RPM_MAX_STALE_DURATION_MS 2500 // if the old reading has been stale for this long (due to new ones being out of range), it gives up and uses the new one 
+
+#define RPM_MIN 2000 // sensible/safe rpm range - beyond this, spark cut will be disbled
+#define RPM_MAX 10000
+#define MAX_CUT_DURATION_MS 3000
+#define COUNT_SOFT_CUT_FOR_MAX_CUT_DURATION false
+
+
+// LOGGING/DEBUG
+// -------------
+
+#define LOG_RPM false
+#define LOG_CUT_STATUS false
+#define LOG_CUT_STATUS_WHEN_NO_CUT false
+#define LOG_CUT_REASON false
+#define LOG_SECURITY_STATUS false
 
 
 // LIMITER PARAMETERS

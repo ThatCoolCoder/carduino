@@ -1,5 +1,5 @@
-#ifndef LIMITER_DEFINITIONS
-#define LIMITER_DEFINITIONS
+#ifndef LIMITER_CONFIGS
+#define LIMITER_CONFIGS
 
 typedef enum LimiterType {
     HardSimple,

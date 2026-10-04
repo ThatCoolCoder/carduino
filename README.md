@@ -1,8 +1,6 @@
 # carduino - car controller with arduino
 
-https://forum.arduino.cc/t/reading-tach-output-wire-12v-to-5v/469365/4
-
-Car controller designed for 4 cylinder engines with wasted spark systems.
+Car controller designed for 4 cylinder engines with wasted spark systems, or more cylinder engines with 
 
 Security and spark cut shenanigans.
 
@@ -10,7 +8,7 @@ Security and spark cut shenanigans.
 
 These are all of the features, which can be enabled independently (although some require others):
 
-- Security
+- Security (killswitch+alarm)
 - Global master switch
 - Status LED
 - Manual spark cut/keybang
@@ -19,13 +17,15 @@ These are all of the features, which can be enabled independently (although some
 - RPM reading
 - Global RPM limiter
 - 2 step limiter
-- Rolling RPM limiter
+- Rolling launch control limiter
 
 ## Info
 
 See docs/features.md detail on each feature (including how to use) docs/wiring.md for wiring & hardware info, docs/config.md for how to configure/install
 
 ## Coding conventions
+
+Baud rate - 38400
 
 snake case variables and camel case functions for some reason
 

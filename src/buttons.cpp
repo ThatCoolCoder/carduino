@@ -18,7 +18,7 @@ void two_step_cut_mode_handler(uint8_t btnId, uint8_t btnState)
     {
         two_step_last_pressed = millis();
     }
-    if (btnState == BTN_OPEN && millis() - two_step_last_pressed < LONG_PRESS_DURATION)
+    if (btnState == BTN_OPEN && millis() - two_step_last_pressed < LONG_PRESS_DURATION_MS)
     {
         two_step_cut_type ++;
         two_step_cut_type %= TWO_STEP_PRESET_COUNT;
@@ -45,7 +45,7 @@ void global_limiter_cut_mode_handler(uint8_t btnId, uint8_t btnState)
     {
         global_limiter_last_pressed = millis();
     }
-    if (btnState == BTN_OPEN && millis() - global_limiter_last_pressed < LONG_PRESS_DURATION)
+    if (btnState == BTN_OPEN && millis() - global_limiter_last_pressed < LONG_PRESS_DURATION_MS)
     {
         global_limiter_cut_type ++;
         global_limiter_cut_type %= GLOBAL_LIMITER_PRESET_COUNT;
@@ -96,8 +96,8 @@ Button rolling_cut_btn(0, rolling_cut_handler); // needs to be a button as we pe
 
 void buttonConfig()
 {
-    global_limiter_level_btn.setPushDebounceInterval(LONG_PRESS_DURATION);
-    two_step_level_btn.setPushDebounceInterval(LONG_PRESS_DURATION);
+    global_limiter_level_btn.setPushDebounceInterval(LONG_PRESS_DURATION_MS);
+    two_step_level_btn.setPushDebounceInterval(LONG_PRESS_DURATION_MS);
 }
 
 void updateButtons()

@@ -5,7 +5,7 @@
 #include "config.hpp"
 #include "confighelpers.hpp"
 #include "limiters.hpp"
-#include "limiter_definitions.hpp"
+#include "limiter_configs.hpp"
 #include "state.hpp"
 
 bool checkManualCut()
@@ -53,6 +53,29 @@ void check2Step()
     else if (! PEDALS_ENABLED || ! clutch_pressed) two_step_active = false;
 }
 
+void count_cut_duration(bool c1, bool c2)
+{
+    unsigned long now = millis();
+    if (COUNT_SOFT_CUT_FOR_MAX_CUT_DURATION)
+    {
+        if (! (c1 || c2)) last_non_cut_time = now;
+    }
+    else
+    {
+        if (! (c1 && c2)) last_non_cut_time = now;
+    }
+}
+
+
+#ifdef LOG_CUT_REASON
+    #define HELP_LOG_CUT_REASON_PRE pre_c1 = c1; pre_c2 = c2;
+    #define HELP_LOG_CUT_REASON_POST(reason) if ((c1 && ! pre_c1) || (c2 && ! pre_c2)) Serial.println("cut_reason: " + reason);
+
+#else
+    #define HELP_LOG_CUT_REASON_PRE {}
+    #define HELP_LOG_CUT_REASON_POST(reason) {}
+#endif
+
 void manageSparkCut()
 {
     REQUIRE_ENABLED(SPARK_CUT_ENABLED);
@@ -67,8 +90,10 @@ void manageSparkCut()
 
     if (GLOBAL_LIMITER_ENABLED && global_limiter_levels[global_limiter_level_idx] > 0)
     {
+        HELP_LOG_CUT_REASON_PRE;
         delegateLimiter(global_limiter_levels[global_limiter_level_idx],
             &global_limiter_presets[global_limiter_cut_type], &c1, &c2);
+        HELP_LOG_CUT_REASON_POST("global limiter");
     }
 
     // Prevent other limiter overriding global limiter if that is already active
@@ -78,25 +103,47 @@ void manageSparkCut()
         {
             c1 = true;
             c2 = true;
+
+            if (LOG_CUT_REASON && manual_cut_active) Serial.print("cut_reason: manual cut");
+            if (LOG_CUT_REASON && no_lift_active) Serial.print("cut_reason: no lift");
         }
         else if (two_step_active && two_step_levels[two_step_level_idx] > 0)
         {
+            HELP_LOG_CUT_REASON_PRE;
             delegateLimiter(two_step_levels[two_step_level_idx],
                 &two_step_presets[two_step_cut_type], &c1, &c2);
+            HELP_LOG_CUT_REASON_POST("two step");
         }
         else if (rolling_cut_target_rpm > 0)
         {	
+            HELP_LOG_CUT_REASON_PRE;
             delegateLimiter(rolling_cut_target_rpm,
                 &rolling_cut_presets[rolling_cut_type], &c1, &c2);
+            HELP_LOG_CUT_REASON_POST("rolling cut");      
         }
     }
 
-    if (c1) digitalWrite(OUT_COIL_1_CUT, HIGH);
+    count_cut_duration(c1, c2);
+
+    bool cut_too_long = millis() - last_non_cut_time > MAX_CUT_DURATION_MS;
+    
+    if (c1 && ! cut_too_long) digitalWrite(OUT_COIL_1_CUT, HIGH);
     else digitalWrite(OUT_COIL_1_CUT, LOW);
 
-    if (c2) digitalWrite(OUT_COIL_2_CUT, HIGH);
+    if (c2 && ! cut_too_long) digitalWrite(OUT_COIL_2_CUT, HIGH);
     else digitalWrite(OUT_COIL_2_CUT, LOW);
 
+    if (LOG_CUT_STATUS)
+    {
+        if (c1 || c2 || LOG_CUT_STATUS_WHEN_NO_CUT)
+        {
+            Serial.print("CUT TOO LONG!!!!!");
+            Serial.print("cut_status: ");
+            Serial.print(c1 ? "cut " : "norm");
+            Serial.print(" ");
+            Serial.println(c2 ? "cut ": "norm");
+        }
+    }
 
     if (FLASH_LED_ON_CUT_ENABLED)
     {

@@ -11,7 +11,7 @@
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(38400);
 
     INPUT_IF(MASTER_SWITCH_ENABLED, IN_MASTER);
     INPUT_IF(SECURITY_ENABLED, IN_UNLOCK);
@@ -77,7 +77,7 @@ void loop()
     {
         updateRpm();
 
-        if (rpm < MIN_ACTIVE_RPM || rpm > MAX_ACTIVE_RPM)
+        if (rpm < RPM_MIN || rpm > RPM_MAX)
         {
             safenOutputs();
             return;
