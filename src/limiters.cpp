@@ -17,7 +17,7 @@ void hardTime(int target_rpm, int cut_time, bool use_early_timing, bool* c1, boo
 {
     unsigned long now = millis();
 
-    bool in_window = (now - last_cut_time) < cut_time;
+    bool in_window = (now - last_cut_time_ms) < cut_time;
 
     if (rpm > target_rpm || in_window)
     {
@@ -27,9 +27,9 @@ void hardTime(int target_rpm, int cut_time, bool use_early_timing, bool* c1, boo
 
     if (use_early_timing)
     {
-        if (rpm > target_rpm && ! in_window) last_cut_time = now; // count from when enters limiter
+        if (rpm > target_rpm && ! in_window) last_cut_time_ms = now; // count from when enters limiter
     }
-    else if (rpm > target_rpm) last_cut_time = now; // count from when leaves limiter
+    else if (rpm > target_rpm) last_cut_time_ms = now; // count from when leaves limiter
 }
 
 void hardRpmHysteresis(int target_rpm, int rpm_range, bool* c1, bool* c2)
@@ -54,9 +54,9 @@ void softRaw(int target_rpm, int speed, int size, bool* c1, bool* c2)
     }
 
     unsigned long now = millis();
-    if (now - last_soft_cut_switch_time > speed)
+    if (now - last_soft_cut_switch_time_ms > speed)
     {
-        last_soft_cut_switch_time = now;
+        last_soft_cut_switch_time_ms = now;
         soft_cut_coil_2 = ! soft_cut_coil_2;
     }
 }

@@ -40,6 +40,10 @@
 #define LONG_PRESS_DURATION_MS 300 // determiner of long/short press on buttons
 
 #define SECURITY_ENABLED true // can set to START_UNLOCKED if security is wired up but you don't want to use it
+#define SECURITY_GENEROUS_MODE true // generous mode = show confirmation when unlock happens, and delay the alarm a few seconds if not, so you don't false alarm yourself
+#define SECURTIY_GENEROUS_DELAY_MS 3000 // delay before alarm in generous mode
+#define SECURITY_GENEROUS_SHOW_LED_ON_UNLOCK true
+
 #define MASTER_SWITCH_ENABLED true // if false, will act as if master switch is always pressed
 #define STATUS_LED_ENABLED true
 
@@ -59,8 +63,8 @@
 
 #define RPM_MIN 2000 // sensible/safe rpm range - beyond this, spark cut will be disbled
 #define RPM_MAX 10000
-#define MAX_CUT_DURATION_MS 3000
-#define COUNT_SOFT_CUT_FOR_MAX_CUT_DURATION false
+#define MAX_CUT_DURATION_MS 3000 // safety thing so if something goes wrong, it doesn't stay cut and turn the engine off
+#define LOCK_OUT_IF_EXCEED_MAX_CUT_DURATION true // doesn't do anything yet
 
 
 // LOGGING/DEBUG
@@ -68,10 +72,8 @@
 
 #define LOG_RPM false
 #define LOG_CUT_STATUS false
-#define LOG_CUT_STATUS_WHEN_NO_CUT false
 #define LOG_CUT_REASON false
-#define LOG_PEDALS false
-#define LOG_SECURITY_STATUS false
+#define LOG_SECURITY false
 
 
 // LIMITER PARAMETERS

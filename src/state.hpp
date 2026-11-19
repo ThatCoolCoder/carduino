@@ -7,6 +7,8 @@
 
 extern bool unlocked;
 extern bool locked_out;
+extern long start_attempt_time_ms;
+extern bool should_lock_out_after_timeout;
 
 extern bool no_lift_active;
 
@@ -21,19 +23,19 @@ extern int rolling_cut_type;
 extern int rolling_cut_target_rpm; // if 0 means not active
 
 extern bool accel_pressed;
-extern unsigned long accel_last_pressed;
+extern unsigned long accel_last_pressed_ms;
 extern bool clutch_pressed;
-extern unsigned long clutch_last_pressed;
+extern unsigned long clutch_last_pressed_ms;
 
 extern int rpm;
-extern long rpm_pulse_times[RPM_SMOOTHNESS + 1];
+extern long rpm_pulse_times_us[RPM_SMOOTHNESS + 1];
 extern int rpm_pulse_idx;
-extern long last_valid_rpm_time;
+extern long last_valid_rpm_time_us;
 
-extern unsigned long last_non_cut_time;
-extern unsigned long last_cut_time;
+extern unsigned long last_non_cut_time_ms;
+extern unsigned long last_cut_time_ms;
 extern bool hysteresis_cut_active;
-extern unsigned long last_soft_cut_switch_time;
+extern unsigned long last_soft_cut_switch_time_ms;
 extern bool soft_cut_coil_2;
 
 typedef struct QueuedBlink
@@ -43,7 +45,7 @@ typedef struct QueuedBlink
 } QueuedBlink;
 
 extern cppQueue queue;
-extern unsigned long last_blink_started;
+extern unsigned long last_blink_started_ms;
 
 void safenOutputs();
 

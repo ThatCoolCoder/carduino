@@ -12,7 +12,7 @@ void queueLedBlink(int duration, bool led_on)
 {
     REQUIRE_ENABLED(STATUS_LED_ENABLED);
 
-    if (queue.isEmpty()) last_blink_started = millis();
+    if (queue.isEmpty()) last_blink_started_ms = millis();
 
     QueuedBlink blink = {duration, led_on};
     queue.push(&blink);
@@ -42,7 +42,7 @@ void manageLedBlinks()
 
         unsigned long now = millis();
 
-        if (now - last_blink_started > 100)
+        if (now - last_blink_started_ms > 100)
         {
             // delete and move to next
             queue.pop(&curr);
@@ -52,7 +52,7 @@ void manageLedBlinks()
                 digitalWrite(OUT_STATUS_LED, LOW);
                 return;
             }
-            last_blink_started = now;
+            last_blink_started_ms = now;
 
             queue.peek(&curr);
         }

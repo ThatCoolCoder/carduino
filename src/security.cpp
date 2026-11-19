@@ -2,6 +2,7 @@
 
 #include "security.hpp"
 
+#include "blink.hpp"
 #include "config.hpp"
 #include "confighelpers.hpp"
 #include "state.hpp"
@@ -33,17 +34,50 @@ void doSecurity()
     bool starting = digitalRead(IN_STARTER) == LOW;
     bool unlock_button = digitalRead(IN_UNLOCK) == LOW;
 
-    if (starting && unlock_button)
+    if (SECURITY_GENEROUS_MODE)
     {
-        unlocked = true;
-        digitalWrite(OUT_FUEL_PUMP, HIGH);
-        digitalWrite(OUT_HORN, LOW);
-        if (LOG_SECURITY_STATUS) Serial.println("security: logged in successfully");
-    }
+        if (should_lock_out_after_timeout)
+        {
+            if ((millis() - start_attempt_time_ms) > SECURTIY_GENEROUS_DELAY_MS) locked_out = true;
+            return;
+        }
 
-    if (starting && ! unlock_button)
+        if (starting && unlock_button)
+        {
+            unlocked = true;
+            digitalWrite(OUT_FUEL_PUMP, HIGH);
+            digitalWrite(OUT_HORN, LOW);
+
+            if (STATUS_LED_ENABLED)
+            {
+                digitalWrite(OUT_STATUS_LED);
+                queueLedBlink(2000, true);
+            }
+
+            if (LOG_SECURITY_STATUS) Serial.println("security: logged in successfully");
+        }
+
+        if (starting && ! unlock_button && ! should_lock_out_after_timeout)
+        {
+            should_lock_out_after_timeout = true;
+            start_attempt_time_ms = millis();
+            if (LOG_SECURITY_STATUS) Serial.println("security: started lockout delay (generous mode)");
+        }
+    }
+    else
     {
-        locked_out = true;
+        if (starting && unlock_button)
+        {
+            unlocked = true;
+            digitalWrite(OUT_FUEL_PUMP, HIGH);
+            digitalWrite(OUT_HORN, LOW);
+            if (LOG_SECURITY_STATUS) Serial.println("security: logged in successfully");
+        }
+
+        if (starting && ! unlock_button)
+        {
+            locked_out = true;
+        }
     }
 }
 

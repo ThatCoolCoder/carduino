@@ -11,9 +11,9 @@ void readPedals()
     REQUIRE_ENABLED(PEDALS_ENABLED);
 
     clutch_pressed = digitalRead(IN_CLUTCH) == LOW;
-    if (clutch_pressed) clutch_last_pressed = millis();
+    if (clutch_pressed) clutch_last_pressed_ms = millis();
     accel_pressed = digitalRead(IN_ACCEL) == LOW;
-    if (accel_pressed) accel_last_pressed = millis();
+    if (accel_pressed) accel_last_pressed_ms = millis();
 
     if (LOG_PEDALS)
     {

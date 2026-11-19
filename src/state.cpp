@@ -8,6 +8,8 @@
 
 bool unlocked = false;
 bool locked_out = false;
+long start_attempt_time_ms = 0;
+bool should_lock_out_after_timeout = false;
 
 bool no_lift_active = false;
 
@@ -22,23 +24,23 @@ int rolling_cut_type = 0;
 int rolling_cut_target_rpm = 0; // 0 means not active
 
 bool accel_pressed = false;
-unsigned long accel_last_pressed = 0;
+unsigned long accel_last_pressed_ms = 0;
 bool clutch_pressed = false;
-unsigned long clutch_last_pressed = 0;
+unsigned long clutch_last_pressed_ms = 0;
 
 int rpm = 3000;
-long rpm_pulse_times[RPM_SMOOTHNESS + 1];
+long rpm_pulse_times_us[RPM_SMOOTHNESS + 1];
 int rpm_pulse_idx = 0;
-long last_valid_rpm_time = 0;
+long last_valid_rpm_time_us = 0;
 
-unsigned long last_non_cut_time = 0; // used for max cut duration
-unsigned long last_cut_time = 0;
+unsigned long last_non_cut_time_ms = 0; // used for max cut duration
+unsigned long last_cut_time_ms = 0;
 bool hysteresis_cut_active = false;
-unsigned long last_soft_cut_switch_time = 0;
+unsigned long last_soft_cut_switch_time_ms = 0;
 bool soft_cut_coil_2 = false;
 
 cppQueue queue(sizeof(QueuedBlink), 20, FIFO, false);
-unsigned long last_blink_started = 0;
+unsigned long last_blink_started_ms = 0;
 
 void safenOutputs()
 {
@@ -50,7 +52,7 @@ void safenOutputs()
     if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_1_CUT, LOW);
     if (SPARK_CUT_ENABLED) digitalWrite(OUT_COIL_2_CUT, LOW);
 
-    last_non_cut_time = 0;
+    last_non_cut_time_ms = 0;
     no_lift_active = false;
     two_step_active = false;
     rolling_cut_target_rpm = 0;
@@ -61,10 +63,10 @@ void safenOutputs()
 
 void resetLimiters()
 {
-    last_cut_time = 0;
+    last_cut_time_ms = 0;
     hysteresis_cut_active = false;
 
-    last_soft_cut_switch_time = 0;
+    last_soft_cut_switch_time_ms = 0;
     soft_cut_coil_2 = false;
 }
 
@@ -73,6 +75,8 @@ void resetSecurity()
     REQUIRE_ENABLED(SECURITY_ENABLED);
 
     locked_out = false;
+    start_attempt_time_ms = 0;
+    should_lock_out_after_timeout = false;
 
     if (SECURITY_ENABLED == START_UNLOCKED)
     {
@@ -103,7 +107,7 @@ void resetNonSecurity()
     rolling_cut_type = 0;
 
     rpm = 0;
-    last_valid_rpm_time = 0;
+    last_valid_rpm_time_us = 0;
     rpm_pulse_idx = 0;
     // don't reset pulse times - this function gets called on bad rpm so it would be an infinite loop
 }

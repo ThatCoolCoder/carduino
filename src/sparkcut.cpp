@@ -34,7 +34,7 @@ void checkNoLift()
     else
     {
         // trigger on
-        if (clutch_pressed && millis() - accel_last_pressed < NO_LIFT_ACCEL_TIMEOUT) no_lift_active = true;
+        if (clutch_pressed && millis() - accel_last_pressed_ms < NO_LIFT_ACCEL_TIMEOUT) no_lift_active = true;
     }
 
 }
@@ -58,11 +58,11 @@ void count_cut_duration(bool c1, bool c2)
     unsigned long now = millis();
     if (COUNT_SOFT_CUT_FOR_MAX_CUT_DURATION)
     {
-        if (! (c1 || c2)) last_non_cut_time = now;
+        if (! (c1 || c2)) last_non_cut_time_ms = now;
     }
     else
     {
-        if (! (c1 && c2)) last_non_cut_time = now;
+        if (! (c1 && c2)) last_non_cut_time_ms = now;
     }
 }
 
@@ -125,7 +125,7 @@ void manageSparkCut()
 
     count_cut_duration(c1, c2);
 
-    bool cut_too_long = millis() - last_non_cut_time > MAX_CUT_DURATION_MS;
+    bool cut_too_long = millis() - last_non_cut_time_ms > MAX_CUT_DURATION_MS;
     
     if (c1 && ! cut_too_long) digitalWrite(OUT_COIL_1_CUT, HIGH);
     else digitalWrite(OUT_COIL_1_CUT, LOW);
